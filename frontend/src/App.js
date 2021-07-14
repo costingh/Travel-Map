@@ -4,17 +4,22 @@ import RoomIcon from "@material-ui/icons/Room";
 import { Star } from "@material-ui/icons";
 import axios from "axios";
 import { format } from "timeago.js";
+import Register from "./components/Register";
+import Login from "./components/Login";
 
 import "./app.css";
 
 function App() {
+	const myStorage = window.localStorage;
+	const [currentUsername, setCurrentUsername] = useState(myStorage.getItem("user"));
 	const [pins, setPins] = useState([]);
 	const [currentPlaceId, setCurrentPlaceId] = useState(null);
-	const [currentUsername, setCurrentUsername] = useState("john");
+	const [newPlace, setNewPlace] = useState(null);
 	const [title, setTitle] = useState(null);
 	const [desc, setDesc] = useState(null);
 	const [star, setStar] = useState(0);
-	const [newPlace, setNewPlace] = useState(null);
+	const [showRegister, setShowRegister] = useState(false);
+	const [showLogin, setShowLogin] = useState(false);
     const [viewport, setViewport] = useState({
 		height: '100vh',
 		width: '100vw',
@@ -68,6 +73,11 @@ function App() {
 		};
 		getPins();
 	  }, []);
+
+	  const handleLogout = () => {
+		setCurrentUsername(null);
+		myStorage.removeItem("user");
+	  };
 	
 	  
 
@@ -180,6 +190,31 @@ function App() {
 						</div>
 						</Popup>
 					</>
+					)}
+					{currentUsername ? (
+						<button className="button logout" onClick={handleLogout}>
+							Log out
+						</button>
+						) : (
+						<div className="buttons">
+							<button className="button login" onClick={() => setShowLogin(true)}>
+							Log in
+							</button>
+							<button
+							className="button register"
+							onClick={() => setShowRegister(true)}
+							>
+							Register
+							</button>
+						</div>
+						)}
+						{showRegister && <Register setShowRegister={setShowRegister} />}
+						{showLogin && (
+						<Login
+							setShowLogin={setShowLogin}
+							setCurrentUsername={setCurrentUsername}
+							myStorage={myStorage}
+						/>
 					)}
             </ReactMapGL>
         </div>
