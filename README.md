@@ -14,6 +14,20 @@ Tech stack:
 
 ## Available Scripts
 
+First of all, you should create a free account on mapbox website. You need an api key. Once you're done, navigate to fronted directoru=y and create a .env file.
+Add to it the following line:
+
+```bash
+REACT_APP_MAPBOX = <api-key>
+```
+
+Then, you will also need a database to connect the server to. For this one, you can create an account on mongoDB. From there create a cluster. You will need some credentials to create a database, so keep them in mind. 
+Navigate to backend directory and create a .env file and add in it the following line of code, where <username>, <password> and <databaseName> must be replaced with your credentials:
+
+```bash
+MONGO_URL = mongodb+srv://<username>:<password>@cluster0.kjcdw.mongodb.net/<databaseName>?retryWrites=true&w=majority
+```
+
 To run this project locally, you need to navigate in the project directory, where start.sh file is and open two terminals. 
 In one terminal the frontend server must be runned, and in the other, the backend server.
 
