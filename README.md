@@ -1,6 +1,6 @@
 # Travel-Map
 This is an app that makes use of mapbox api to render the world map. On this map users can pin locations that they have visited, rate them, add description and others.
-It also uses authentication system.
+Users can login, register and search for a location on the map.
 
 ![Demo Image](https://github.com/costingh/Travel-Map/blob/master/demo.png?raw=true)
 
