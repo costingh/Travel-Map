@@ -1,6 +1,6 @@
-import { Cancel, Room } from "@material-ui/icons";
 import axios from "axios";
 import { useRef, useState } from "react";
+import CloseIcon from '@material-ui/icons/Close';
 import "./login.css";
 
 export default function Login({ setShowLogin, setCurrentUsername,myStorage }) {
@@ -26,11 +26,8 @@ export default function Login({ setShowLogin, setCurrentUsername,myStorage }) {
 
   return (
     <div className="loginContainer">
-      <div className="logo">
-        <Room className="logoIcon" />
-        <span>Travel Map</span>
-      </div>
-      <form onSubmit={handleSubmit}>
+      <div className="header">Travel Map</div>
+      <form onSubmit={handleSubmit} className="login-form">
         <input autoFocus placeholder="username" ref={usernameRef} />
         <input
           type="password"
@@ -43,7 +40,7 @@ export default function Login({ setShowLogin, setCurrentUsername,myStorage }) {
         </button>
         {error && <span className="failure">Something went wrong!</span>}
       </form>
-      <Cancel className="loginCancel" onClick={() => setShowLogin(false)} />
+      <CloseIcon className="loginCancel" onClick={() => setShowLogin(false)} />
     </div>
   );
 }

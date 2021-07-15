@@ -6,6 +6,7 @@ import axios from "axios";
 import { format } from "timeago.js";
 import Register from "./components/Register";
 import Login from "./components/Login";
+import SearchBar from './components/SearchBar';
 
 import "./app.css";
 
@@ -27,7 +28,10 @@ function App() {
         longitude: 25,
         zoom: 4,
 	});
-	
+
+	const [locations, setLocations] = useState(null);
+	const [value, setValue] = useState('');
+
 	const handleMarkerClick = (id, lat, long) => {
 		setCurrentPlaceId(id);
 		setViewport({ ...viewport, latitude: lat, longitude: long });
@@ -60,7 +64,6 @@ function App() {
 		  console.log(err);
 		}
 	  };
-
 	  
 	useEffect(() => {
 		const getPins = async () => {
@@ -79,10 +82,51 @@ function App() {
 		myStorage.removeItem("user");
 	  };
 	
-	  
+	const search = async (query) => {
+		const url = 'https://api.mapbox.com/geocoding/v5/mapbox.places/' + query + '.json?access_token=' + process.env.REACT_APP_MAPBOX;
+
+		try {
+		  const res = await axios.get(url);
+		  setLocations(res.data.features);
+		} catch (err) {
+		  console.log(err);
+		}
+	}
+
+	const clearForm = () => {
+		setValue('');
+		if(locations) {
+			setLocations(null);
+		}
+	}
+
+	useEffect(() => {
+		if(value !== '') {
+			search(value);
+		}
+	}, [value])
+
+	const searchLocation = (e) => {
+		if(locations) {
+			const searchedLocation = locations.filter( location => location.place_name === e.target.innerText);
+			setViewport({	
+				...viewport, 
+				latitude: searchedLocation[0].geometry.coordinates[1], 
+				longitude: searchedLocation[0].geometry.coordinates[0],
+				zoom: 8
+			});
+		}
+    }
 
     return (
         <div style={{ height: "100vh", width: "100%" }}>
+			<SearchBar
+				value={value}
+				setValue={setValue}
+				locations={locations}
+				clearForm={clearForm}
+				searchLocation={searchLocation}
+			/>	
             <ReactMapGL
                 {...viewport}
                 mapboxApiAccessToken={process.env.REACT_APP_MAPBOX}
@@ -90,14 +134,15 @@ function App() {
                 onViewportChange={(nextViewport) => setViewport(nextViewport)}
                 mapStyle="mapbox://styles/costingh/ckr2ev6g8e83v18pdshcjn8ti"
 				onDblClick={currentUsername && handleAddClick}
+				onClick={clearForm}
 			>
 			{pins.map((p) => (
 				<>
 					<Marker
-					latitude={p.lat}
-					longitude={p.long}
-					offsetLeft={-3.5 * viewport.zoom}
-					offsetTop={-7 * viewport.zoom}
+						latitude={p.lat}
+						longitude={p.long}
+						offsetLeft={-3.5 * viewport.zoom}
+						offsetTop={-7 * viewport.zoom}
 					>
 						<RoomIcon
 							style={{
@@ -106,6 +151,7 @@ function App() {
 								currentUsername === p.username ? "tomato" : "slateblue",
 							cursor: "pointer",
 							}}
+							className="marker"
 							onClick={() => handleMarkerClick(p._id, p.lat, p.long)}
 						/>
 					</Marker>
@@ -141,10 +187,10 @@ function App() {
 				{newPlace && (
 					<>
 						<Marker
-						latitude={newPlace.lat}
-						longitude={newPlace.long}
-						offsetLeft={-3.5 * viewport.zoom}
-						offsetTop={-7 * viewport.zoom}
+							latitude={newPlace.lat}
+							longitude={newPlace.long}
+							offsetLeft={-3.5 * viewport.zoom}
+							offsetTop={-7 * viewport.zoom}
 						>
 						<RoomIcon
 							style={{
@@ -163,7 +209,7 @@ function App() {
 						anchor="left"
 						>
 						<div>
-							<form onSubmit={handleSubmit}>
+							<form onSubmit={handleSubmit} className='addNewPinForm'>
 							<label>Title</label>
 							<input
 								placeholder="Enter a title"
@@ -198,13 +244,13 @@ function App() {
 						) : (
 						<div className="buttons">
 							<button className="button login" onClick={() => setShowLogin(true)}>
-							Log in
+								Log in
 							</button>
 							<button
-							className="button register"
-							onClick={() => setShowRegister(true)}
+								className="button register"
+								onClick={() => setShowRegister(true)}
 							>
-							Register
+								Register
 							</button>
 						</div>
 						)}
@@ -215,7 +261,7 @@ function App() {
 							setCurrentUsername={setCurrentUsername}
 							myStorage={myStorage}
 						/>
-					)}
+					)}		
             </ReactMapGL>
         </div>
     );

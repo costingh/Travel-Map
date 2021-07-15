@@ -1,4 +1,4 @@
-import { Cancel, Room } from "@material-ui/icons";
+import CloseIcon from '@material-ui/icons/Close';
 import axios from "axios";
 import { useRef, useState } from "react";
 import "./register.css";
@@ -28,12 +28,9 @@ export default function Register({ setShowRegister }) {
   };
   return (
     <div className="registerContainer">
-      <div className="logo">
-        <Room className="logoIcon" />
-        <span>Travel Map</span>
-      </div>
-      <form onSubmit={handleSubmit}>
-        <input autoFocus placeholder="username" ref={usernameRef} />
+      <div className="header">Travel Map</div>  
+      <form onSubmit={handleSubmit} className='register-form'>
+        <input id='username' autoFocus placeholder="username" ref={usernameRef} />
         <input type="email" placeholder="email" ref={emailRef} />
         <input
           type="password"
@@ -49,7 +46,7 @@ export default function Register({ setShowRegister }) {
         )}
         {error && <span className="failure">Something went wrong!</span>}
       </form>
-      <Cancel
+      <CloseIcon
         className="registerCancel"
         onClick={() => setShowRegister(false)}
       />
